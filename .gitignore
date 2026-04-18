@@ -15,6 +15,10 @@ datos/Data/Espacial/SIVIGILA_debugged_spatial_mun.csv
 datos/Data/Proyecciones/proyecciones_dep_mun_ano_edad.rds
 datos/Data/Proyecciones/proyecciones_mun_ano_edad.rds
 
+# ─── GeoJSON grandes (43 MB c/u, generados desde el shapefile) ──
+departamentos.geojson
+mgn_dptos.geojson
+
 # ─── Comprimidos grandes ─────────────────────────────
 SHP_MGN2018_INTGRD_DEPTO.zip
 Orquidea_Biv_Modelos.zip
