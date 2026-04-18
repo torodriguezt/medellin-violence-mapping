@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relative Risk by Department</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4QjD8H6C3rF8zv0qH0FhKQ0s1YvGkQnYFf2Qp1u5uM=" crossorigin="anonymous">
+  <style>
+    html, body { height: 100%; margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    .container { max-width: 980px; margin: 24px auto; padding: 0 16px; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    .subtitle { color: #555; font-size: 14px; margin-bottom: 12px; }
+    #map { height: 620px; border: 1px solid #ddd; border-radius: 8px; }
+    .legend { background: white; padding: 10px; line-height: 1.2; box-shadow: 0 2px 6px rgba(0,0,0,0.1); border-radius: 6px; }
+    .legend .scale { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .legend .swatch { width: 20px; height: 12px; }
+    .footer { color: #666; font-size: 12px; margin-top: 8px; }
+    .tooltip {
+      position: absolute; pointer-events: none; background: rgba(255,255,255,0.95);
+      padding: 8px 10px; border-radius: 6px; font-size: 13px; color: #222; border: 1px solid #eee;
+    }
+  </style>
+  <!-- Data files are loaded relative to this HTML's location -->
+</head>
+<body>
+  <div class="container">
+    <h1>Relative Risk by Department</h1>
+    <div class="subtitle">Shaded choropleth using GeoJSON + CSV (D3 + Leaflet)</div>
+    <div id="map"></div>
+    <div class="footer">Grey areas have missing values. Hover to inspect.</div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-vzvNVNqZbIvuX4Yb5rjV5rGJPD7W82dMan3Z36YMWnY=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="relative_risk_map.js"></script>
+</body>
+</html>

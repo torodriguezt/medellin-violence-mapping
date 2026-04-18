@@ -1,0 +1,21 @@
+# ─── R workspace ────────────────────────────────────
+.RData
+.RDataTmp
+.Rhistory
+
+# ─── Datos SIVIGILA (sensibles, no subir al repo) ───
+SIVIGILA_debugged_v2.rds
+datos/Data/Espacial/SIVIGILA_debugged_spatial.rds
+datos/Data/Espacial/SIVIGILA_debugged_spatial_depto.rds
+datos/Data/Espacial/SIVIGILA_debugged_spatial_mun.rds
+datos/Data/Espacial/SIVIGILA_debugged_spatial_depto.csv
+datos/Data/Espacial/SIVIGILA_debugged_spatial_mun.csv
+
+# ─── Proyecciones DANE (archivos grandes) ────────────
+datos/Data/Proyecciones/proyecciones_dep_mun_ano_edad.rds
+datos/Data/Proyecciones/proyecciones_mun_ano_edad.rds
+
+# ─── Comprimidos grandes ─────────────────────────────
+SHP_MGN2018_INTGRD_DEPTO.zip
+Orquidea_Biv_Modelos.zip
+Orquidea_Biv_Modelos/
