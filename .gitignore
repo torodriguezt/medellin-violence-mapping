@@ -3,23 +3,32 @@
 .RDataTmp
 .Rhistory
 
-# ─── Datos SIVIGILA (sensibles, no subir al repo) ───
+# ─── Sensitive data (raw microdata, not committed) ───
 SIVIGILA_debugged_v2.rds
 datos/Data/Espacial/SIVIGILA_debugged_spatial.rds
 datos/Data/Espacial/SIVIGILA_debugged_spatial_depto.rds
 datos/Data/Espacial/SIVIGILA_debugged_spatial_mun.rds
 datos/Data/Espacial/SIVIGILA_debugged_spatial_depto.csv
 datos/Data/Espacial/SIVIGILA_debugged_spatial_mun.csv
+datos/Data/Espacial/medata_1900_2022.csv
+datos/Data/Espacial/medata_1900_2022_debugged.csv
 
-# ─── Proyecciones DANE (archivos grandes) ────────────
+# ─── DANE population projections (large files) ────────
 datos/Data/Proyecciones/proyecciones_dep_mun_ano_edad.rds
 datos/Data/Proyecciones/proyecciones_mun_ano_edad.rds
 
-# ─── GeoJSON grandes (43 MB c/u, generados desde el shapefile) ──
-departamentos.geojson
-mgn_dptos.geojson
+# ─── Large archives ────────────────────────────────────
+orquidea_overleaf.zip
 
-# ─── Comprimidos grandes ─────────────────────────────
-SHP_MGN2018_INTGRD_DEPTO.zip
-Orquidea_Biv_Modelos.zip
-Orquidea_Biv_Modelos/
+# ─── Heavy INLA fits (regenerable) ─────────────────────
+results/*.rds
+
+# ─── LaTeX article (source, build artifacts, bibliography) ──
+article.tex
+article.pdf
+article.aux
+article.bbl
+article.blg
+article.log
+article.out
+references.bib
