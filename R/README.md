@@ -110,10 +110,7 @@ and PNG/PDF plots in `figures/`.
 | `Table_parameters.R` | Parameters and hyperparameters of M3 (`l = 3`) |
 | `Table_sensitivity.R` | Period contrasts under prior, spatial-prior and relationship-stratified refits |
 | `Table_hotspots.R` | Joint exceedance and persistent hotspots, using 1,000 selected joint draws |
-| `Figures_descriptive.R` | Study region, crude-rate maps and trends |
-| `Figures_risk.R` | Relative risks, selected neighbourhoods, spatial components and hotspots |
-| `Figures_loadings.R` | Period loadings and temporal factors |
-| `Figures_checks.R` | PIT, posterior predictive check and cell-level holdout plots |
+| `Figures.R` | All figures, in the order they appear in the article |
 | `figure_style.R` | Plot colours, themes and export helper |
 
 The model-comparison script includes any listed model whose saved fit exists,
