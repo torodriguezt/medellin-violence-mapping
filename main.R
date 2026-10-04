@@ -1,21 +1,10 @@
-# run full pipeline from repo root: source("main.R")
+################################################################################
+# Reproduces the analysis of the article, from the input data to the tables
+# and figures. Run from the repository root:  source("main.R")
+# About 30 minutes with R 4.4.2 and INLA 24.12.11.
+################################################################################
 
-pasos <- c(
-  "01_population.R",
-  "02_cases_covariates.R",
-  "02b_exogenous_covariates.R",
-  "03_expected_counts.R",
-  "04_neighbourhood_graph.R",
-  "05_baseline_models.R",
-  "06_dynamic_delta_model.R",
-  "07_covariate_models.R",
-  "08_joint_exceedance.R",
-  "09_figures.R"
-)
-
-for (p in pasos) {
-  message(">>> ", p)
-  source(file.path("scripts", p))
-}
-
-message("done -> results/, figures/")
+source("R/Data_preparation/Data_preparation.R")   # -> results/data/
+source("R/All_Models/All_Models.R")               # -> results/fits/
+source("R/Robustness/Robustness.R")               # -> results/fits/, results/tables/
+source("R/Results/Results.R")                     # -> results/tables/, figures/
