@@ -10,6 +10,7 @@ suppressPackageStartupMessages({
 FILE_POPULATION <- "R/Data/Population/proyecciones_barrios_2018_2030.xlsx"
 FILE_CARTO      <- "R/Data/Carto/barrios_y_veredas_mr.shp"
 FILE_CASES      <- "R/Data/Cases/medata_1900_2022_debugged.csv"   # not distributed
+FILE_CASES_RAW  <- "R/Data/Cases/medata_1900_2022.csv"   # raw MEData export, for the notifying unit
 
 ## outputs
 DIR_DATA <- "results/data"
@@ -29,6 +30,7 @@ REMAP_CODES <- c("6098" = "AE1", "6000" = "AUC1", "7096" = "AE5",
 INTRAFAMILIAL <- "Pareja|Familiar|Madre|Padre|Hij|Herman|Abuel|T[íi]o|Primo|Cu[ñn]ad"
 
 AGE_GROUPS <- c(paste(seq(0, 75, 5), seq(4, 79, 5), sep = "-"), "80+")
+ADULT_AGES <- AGE_GROUPS[-(1:4)]   # 20 and over; the 15-19 band does not split at 18
 
 normalise_code <- function(x) {
   x <- str_trim(as.character(x))
