@@ -34,7 +34,7 @@ source("R/All_Models/model_M3_l3.R")
 
 - [`Data/Population/`](Data/Population) — female population projections, 2018–2030.
 - [`Data/Carto/`](Data/Carto) — neighbourhood and rural-unit shapefile and sidecars.
-- [`Data/Cases/`](Data/Cases) — local cleaned case file; microdata are not distributed.
+- [`Data/Cases/`](Data/Cases) — local cleaned case file and raw MEData export (for the notifying unit); microdata are not distributed.
 
 Input paths and study settings are in
 [`Data_preparation/config.R`](Data_preparation/config.R).
@@ -90,6 +90,12 @@ Refits of M3 (`l = 3`), saved in `results/fits/`.
 | `prior_N04.R`, `prior_N11.R` | Normal loading priors with mean/variance (0, 4) and (1, 1) |
 | `spatial_ICAR.R` | Scaled intrinsic CAR in place of the BYM2 spatial fields |
 | `stratum_intrafamilial.R`, `stratum_complement.R` | Intrafamilial notifications and their complement, including unknown or missing relationships |
+| `geocoding_coded_only.R` | Without notifications geocoded by name matching, with expected counts and dual hotspots recomputed |
+| `age_adults_20plus.R` | Both outcomes and the population restricted to women aged 20 and over |
+| `type_without_neglect.R` | Neglect and abandonment removed from non-sexual violence |
+| `interaction_typeIII.R` | Type III instead of Type I space-time interaction |
+| `loadings_both_outcomes.R` | Period loadings in both equations (non-sexual 2018–2019 fixed at one) and their sexual/non-sexual ratio |
+| `notifier_health_only.R` | Notifications from health institutions only, without the family commissaries; M4 from several starting values, M3 and relationship strata |
 | `holdout.R` | Random 15% holdout of area-year-outcome cells, with expected counts rebuilt from training cells |
 
 The holdout checks prediction within the observed areas and years. It is not a
