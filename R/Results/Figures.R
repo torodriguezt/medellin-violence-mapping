@@ -1,6 +1,6 @@
 ################################################################################
 # All figures of the article, in the order they appear. PNG and PDF in figures/.
-# Needs the M3 (l = 3) fit, posterior_draws.R, Table_hotspots.R and holdout.R.
+# Needs the M3 (l = 3) and M4 fits, posterior_draws.R, Table_hotspots.R and holdout.R.
 ################################################################################
 suppressPackageStartupMessages({library(INLA); library(sf); library(dplyr); library(ggplot2)})
 source("R/Results/figure_style.R")
@@ -98,9 +98,9 @@ p <- ggplot() +
   geom_line(data = do.call(rbind, replicated), aes(x, density, group = replicate),
             color = "grey65", alpha = 0.14, linewidth = 0.2) +
   geom_line(data = do.call(rbind, observed), aes(x, density), color = "grey10", linewidth = 0.75) +
-  facet_wrap(~outcome, nrow = 1, scales = "free") +
+  facet_wrap(~outcome, ncol = 1, scales = "free") +
   labs(x = "Counts per neighbourhood-year", y = "Density") + theme_paper(legend = "none")
-save_fig("fig_ppc.png", p, 7.2, 3.4, "figures")
+save_fig("fig_ppc.png", p, 4.2, 5.0, "figures")
 
 ## Fig 7: hold-out validation
 ho <- read.csv("results/tables/holdout_predictions.csv")
@@ -109,34 +109,42 @@ p <- ggplot(ho, aes(observed, predicted)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey55") +
   geom_linerange(aes(ymin = lower, ymax = upper), color = "grey75", linewidth = 0.3, alpha = 0.6) +
   geom_point(aes(color = covered), size = 1, alpha = 0.75) +
-  facet_wrap(~outcome, scales = "free") +
+  facet_wrap(~outcome, ncol = 1, scales = "free") +
   scale_color_manual(values = c(`TRUE` = "grey20", `FALSE` = "#c8664a"), name = NULL,
                      labels = c(`TRUE` = "Within 95% predictive interval", `FALSE` = "Outside")) +
   labs(x = "Observed count (held out)", y = "Predicted mean and 95% predictive interval") +
   theme_paper(legend = "top")
-save_fig("fig_holdout.png", p, 6.5, 3.6, "figures")
+save_fig("fig_holdout.png", p, 4.2, 5.6, "figures")
 
-## Fig 8: relative spatial loading by period
-beta   <- paste0("Beta for idx_psi2_", c("pre", "conf", "post"))
+## Fig 8: spatial loadings by period and outcome (M4) and their ratio,
+## from the 5,000 hyperparameter draws of Table_period_loadings
+m4 <- readRDS("results/fits/M3_l3_both_loadings_all.rds")
+RNGkind("Mersenne-Twister", "Inversion", "Rejection")
+set.seed(511010)
+hs <- inla.hyperpar.sample(5000, m4, intern = FALSE)
+ns <- cbind(1, hs[, "Beta for idx_psi1_conf"], hs[, "Beta for idx_psi1_post"])
+sx <- hs[, paste0("Beta for idx_psi2_", c("pre", "conf", "post"))]
 labels <- c("Pre-pandemic\n2018-2019", "Restriction\n2020-2021", "Post-restriction\n2022")
-d <- data.frame(label = factor(labels, levels = labels),
-                mean = fit$summary.hyperpar[beta, "mean"],
-                q025 = fit$summary.hyperpar[beta, "0.025quant"],
-                q975 = fit$summary.hyperpar[beta, "0.975quant"],
-                res  = c(FALSE, TRUE, FALSE))
-p <- ggplot(d, aes(label, mean)) +
+summ <- function(m, series, panel) data.frame(
+  label = factor(labels, levels = labels), series = series, panel = panel,
+  mean = colMeans(m), q025 = apply(m, 2, quantile, 0.025), q975 = apply(m, 2, quantile, 0.975))
+d <- rbind(summ(ns, "Non-sexual", "Loading"), summ(sx, "Sexual", "Loading"),
+           summ(sx / ns, "Ratio", "Ratio sexual / non-sexual"))
+d[d$series == "Non-sexual" & d$label == labels[1], c("q025", "q975")] <- NA   # fixed at 1
+p <- ggplot(d, aes(label, mean, color = series, shape = series)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "grey60", linewidth = 0.35) +
-  geom_errorbar(aes(ymin = q025, ymax = q975, color = res), width = 0.06, linewidth = 0.5) +
-  geom_point(aes(color = res, size = res)) +
-  geom_text(aes(label = sprintf("%.2f", mean)), nudge_x = 0.14, hjust = 0, size = 3) +
-  scale_color_manual(values = c(`TRUE` = COL_ACCENT, `FALSE` = "grey40"), guide = "none") +
-  scale_size_manual(values = c(`TRUE` = 2.2, `FALSE` = 1.6), guide = "none") +
-  scale_x_discrete(expand = expansion(add = c(0.45, 0.65))) +
+  geom_errorbar(aes(ymin = q025, ymax = q975), width = 0.08, linewidth = 0.5,
+                position = position_dodge(0.35), na.rm = TRUE) +
+  geom_point(size = 1.9, position = position_dodge(0.35)) +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c(COL_TYPE, Ratio = "grey25"), breaks = c("Non-sexual", "Sexual"),
+                     name = NULL) +
+  scale_shape_manual(values = c(SHP_TYPE, Ratio = 18), breaks = c("Non-sexual", "Sexual"),
+                     name = NULL) +
   scale_y_continuous(labels = scales::label_number(accuracy = 0.1)) +
-  labs(x = NULL, y = expression("Relative spatial loading " * delta),
-       title = "Relative spatial loading by period") +
-  theme_paper(legend = "none")
-save_fig("fig_coupling_periods.png", p, 4.2, 2.9, "figures")
+  labs(x = NULL, y = NULL, title = "Spatial loadings by period") +
+  theme_paper(legend = "top")
+save_fig("fig_coupling_periods.png", p, 4.2, 5.2, "figures")
 
 ## Fig 9: temporal factors by type
 x <- draws$other
