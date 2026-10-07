@@ -8,11 +8,6 @@ rm(list = ls()); source("R/All_Models/model_M1.R")         # static shared compo
 rm(list = ls()); source("R/All_Models/model_M2_I.R")       # + Type I interaction
 rm(list = ls()); source("R/All_Models/model_M2_III.R")     # + Type III interaction
 rm(list = ls()); source("R/All_Models/model_M3_annual.R")  # delta_t by year (l = T)
-rm(list = ls()); source("R/All_Models/model_M3_l3.R")      # delta_t by period (reported)
+rm(list = ls()); source("R/All_Models/model_M3_l3.R")      # delta_t by period
+rm(list = ls()); source("R/All_Models/model_M4.R")         # main model: loadings in both outcomes
 rm(list = ls()); source("R/All_Models/model_SCM.R")        # shared interaction rho_t
-rm(list = ls()); source("R/All_Models/model_M5.R")         # delta_t + rho_t (exploratory)
-
-## Types II and IV take about an hour each and end with numerical warnings;
-## they enter no table. Uncomment to refit them.
-# rm(list = ls()); source("R/All_Models/model_M2_II.R")
-# rm(list = ls()); source("R/All_Models/model_M2_IV.R")

@@ -1,5 +1,5 @@
 ################################################################################
-# M3 (l = 3), the model reported in the article: as M2-I, with the relative
+# M3 (l = 3), comparison model and appendix loadings: as M2-I, with the relative
 # spatial loading tied to three periods, delta_pre (2018-2019),
 # delta_lock (2020-2021, idx_psi2_conf) and delta_post (2022).
 ################################################################################

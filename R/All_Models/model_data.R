@@ -45,7 +45,7 @@ for (p in c("pre", "conf", "post"))
 for (t in 1:n_year)
   dat[[paste0("idx_psi2_t", t)]] <- ifelse(dat$resp == 2 & dat$id_year == t, dat$id_area, NA)
 
-## shared-interaction models (SCM, M5), in the layout of Retegui et al. (2024)
+## shared-interaction model (SCM), in the layout of Retegui et al. (2024)
 dat$alpha1   <- as.numeric(dat$resp == 1)
 dat$alpha2   <- as.numeric(dat$resp == 2)
 dat$ID_area  <- dat$id_area + n_area * (dat$resp - 1)   # besag2: outcome 1 | outcome 2
