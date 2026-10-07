@@ -15,9 +15,10 @@ With the dependencies and input data in place, run from the repository root:
 source("main.R")
 ```
 
-This prepares data, fits models and runs the existing robustness and results
-scripts. **M4 results require additional steps:** see [R/README.md](R/README.md#run).
-The drivers clear the R workspace and overwrite generated outputs.
+This reproduces the models, tables and figures in `article_public_health.tex`,
+including its appendices. The drivers clear the workspace and overwrite outputs.
+The full run includes lengthy refits and posterior sampling; see the
+[script guide](R/README.md).
 
 ## Structure
 
