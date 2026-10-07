@@ -1,136 +1,68 @@
 # R analysis pipeline
 
-Code for the bivariate analysis of violence notifications in Medellín, 2018–2022.
-The main specification is M3 with three relative spatial loadings: pre-pandemic,
-restriction and post-restriction. See the [project README](../README.md) for the
-study description and package installation.
+Scripts for data preparation, model fitting and results. M4 is the main model;
+M3 and the other specifications provide comparisons.
 
 ## Run
 
-Run from the repository root with the input data in place, using a fresh R session:
+Start a fresh R session at the repository root:
 
 ```r
 source("main.R")
 ```
 
-Alternatively, run the four stages in order:
+This runs the four drivers listed below, including the M4 fit. Most default
+results still use M3. **For M4 results, continue in this order:**
 
 ```r
-source("R/Data_preparation/Data_preparation.R")
-source("R/All_Models/All_Models.R")
-source("R/Robustness/Robustness.R")
-source("R/Results/Results.R")
+rm(list = ls()); source("R/Results/posterior_draws_M4.R")
+rm(list = ls()); source("R/Robustness/holdout_M4.R")
+rm(list = ls()); source("R/Robustness/geocoding_coded_only_M4.R")
+rm(list = ls()); source("R/Results/psi_continuous_M4.R")
+rm(list = ls()); source("R/Results/Results_M4.R")
+rm(list = ls()); source("R/Results/Figures_M4.R")
 ```
 
-The drivers clear the workspace between scripts and rerun the fits, overwriting
-their saved outputs. Later stages read the files written by earlier ones.
-To run one model separately after data preparation:
+Additional M4 checks, run separately:
 
 ```r
-source("R/All_Models/model_M3_l3.R")
+rm(list = ls()); source("R/Robustness/M4_starting_values.R")
+rm(list = ls()); source("R/Robustness/M4_phi2_profile.R")
+rm(list = ls()); source("R/Robustness/likelihood_negbin_M4.R")
 ```
+
+Drivers clear the workspace and overwrite outputs. Continuous integration reuses
+saved batches; use a fresh batch directory if the fit or sampling settings change.
+
+## Structure
+
+| Driver | Purpose | Output |
+|---|---|---|
+| [Data_preparation.R](Data_preparation/Data_preparation.R) | Population, cases, expected counts and spatial graph | `results/data/` |
+| [All_Models.R](All_Models/All_Models.R) | Comparison-model fits | `results/fits/` |
+| [Robustness.R](Robustness/Robustness.R) | M3 sensitivity checks and M4 fits | `results/fits/`, `results/tables/` |
+| [Results.R](Results/Results.R) | Mainly M3 summaries and plots | `results/posterior/`, `results/tables/`, `figures/` |
+
+M4 is fitted by [loadings_both_outcomes.R](Robustness/loadings_both_outcomes.R)
+and saved as `results/fits/M3_l3_both_loadings_all.rds`. Its additional tables
+and figures go to `results/tables/M4/` and `figures/M4/`.
+
+M2-II and M2-IV are disabled in the model driver because earlier fits retained
+numerical warnings. M5 is exploratory.
 
 ## Data
 
-- [`Data/Population/`](Data/Population) — female population projections, 2018–2030.
-- [`Data/Carto/`](Data/Carto) — neighbourhood and rural-unit shapefile and sidecars.
-- [`Data/Cases/`](Data/Cases) — local cleaned case file and raw MEData export (for the notifying unit); microdata are not distributed.
+See the [input list](../README.md#data) and [case-file requirements](Data/Cases/README.md).
+Settings are in [config.R](Data_preparation/config.R). The raw case export is
+required for health-only analyses; IMCV is used for a descriptive comparison in
+M4 results. Several M4 scripts assume 285 units and the years 2018–2022.
 
-Input paths and study settings are in
-[`Data_preparation/config.R`](Data_preparation/config.R).
+## Dependencies
 
-## Data preparation
+Use the [installation commands](../README.md#dependencies) in the project README.
+Check numerical diagnostics before using regenerated manuscript results: the
+comparison scripts retain flagged CPO values without the manuscript's later review.
 
-Driver: [`Data_preparation.R`](Data_preparation/Data_preparation.R).
-Outputs: `results/data/`.
+## Model reference
 
-| Script | Purpose |
-|---|---|
-| `config.R` | Paths, years, violence codes, relationship classification and helpers |
-| `1_population.R` | Female population by neighbourhood, year and five-year age group |
-| `2_cases.R` | Case counts by area, year, outcome, age group and relationship; reads the cleaned microdata |
-| `3_merge_units.R` | Merge institutional, unnamed and low-population units into eligible neighbours, using shared border length or a distance fallback |
-| `4_expected_counts.R` | Observed and age-standardised expected counts; also writes age-specific cells for the holdout check |
-| `5_neighbourhood_graph.R` | Queen-contiguity graph, area index and map polygons |
-
-The study panel has 285 analysis units, five years and two outcomes (2,850 cells).
-The code derives the units from the supplied population and cartography rather
-than hard-coding that count. Data preparation starts from an already cleaned case
-file; it does not recreate the earlier microdata cleaning and name matching.
-
-## Models
-
-Driver: [`All_Models.R`](All_Models/All_Models.R).
-Outputs: one fit per model in `results/fits/`.
-[`model_data.R`](All_Models/model_data.R) defines shared inputs, indices, priors,
-constraints and the fitting helper.
-
-| Script | Model |
-|---|---|
-| `model_M0.R` | Outcome-specific spatial fields and temporal trends with separate between-outcome correlations |
-| `model_M1.R` | Shared spatial and temporal components with constant loadings |
-| `model_M2_I.R` to `model_M2_IV.R` | M1 plus a Knorr-Held interaction of Type I, II, III or IV |
-| `model_M3_annual.R` | Type I interaction and one relative spatial loading per year (`l = T`) |
-| `model_M3_l3.R` | Type I interaction and three period-specific spatial loadings (`l = 3`); main model |
-| `model_SCM.R` | Shared-interaction model with time-varying interaction loadings |
-| `model_M5.R` | Combined spatial and interaction loadings; exploratory |
-| `inla_rgeneric_scm_change_typeI.R` | Shared-interaction implementation adapted from Retegui et al. (2024), with provenance in its header |
-
-The default driver runs all of these except M2-II and M2-IV. Those two scripts
-remain available for separate execution; earlier fits retained numerical warnings.
-Runtime depends on the model, software and hardware.
-
-## Robustness
-
-Driver: [`Robustness.R`](Robustness/Robustness.R).
-Refits of M3 (`l = 3`), saved in `results/fits/`.
-
-| Script | Change |
-|---|---|
-| `prior_N04.R`, `prior_N11.R` | Normal loading priors with mean/variance (0, 4) and (1, 1) |
-| `spatial_ICAR.R` | Scaled intrinsic CAR in place of the BYM2 spatial fields |
-| `stratum_intrafamilial.R`, `stratum_complement.R` | Intrafamilial notifications and their complement, including unknown or missing relationships |
-| `geocoding_coded_only.R` | Without notifications geocoded by name matching, with expected counts and dual hotspots recomputed |
-| `age_adults_20plus.R` | Both outcomes and the population restricted to women aged 20 and over |
-| `type_without_neglect.R` | Neglect and abandonment removed from non-sexual violence |
-| `interaction_typeIII.R` | Type III instead of Type I space-time interaction |
-| `loadings_both_outcomes.R` | Period loadings in both equations (non-sexual 2018–2019 fixed at one) and their sexual/non-sexual ratio |
-| `notifier_health_only.R` | Notifications from health institutions only, without the family commissaries; M4 from several starting values, M3 and relationship strata |
-| `holdout.R` | Random 15% holdout of area-year-outcome cells, with expected counts rebuilt from training cells |
-
-The holdout checks prediction within the observed areas and years. It is not a
-forecast or validation in new areas.
-
-## Results
-
-Driver: [`Results.R`](Results/Results.R).
-Outputs: posterior draws in `results/posterior/`, CSV tables in `results/tables/`
-and PNG/PDF plots in `figures/`.
-
-| Script | Output |
-|---|---|
-| `posterior_draws.R` | 2,000 joint posterior draws of M3 (`l = 3`) for risk and temporal summaries and predictive checks |
-| `Table_model_comparison.R` | WAIC, DIC, native CPO-based LS, WAIC effective parameter count, flagged CPO count and recorded fitting time |
-| `Table_period_loadings.R` | Period loadings and contrasts, both summarised from 5,000 joint hyperparameter draws |
-| `Table_annual_loadings.R` | Annual loadings and contrasts against the within-model pre-pandemic mean |
-| `Table_parameters.R` | Parameters and hyperparameters of M3 (`l = 3`) |
-| `Table_sensitivity.R` | Period contrasts under prior, spatial-prior and relationship-stratified refits |
-| `Table_hotspots.R` | Joint exceedance and persistent hotspots, using 1,000 selected joint draws |
-| `Figures.R` | All figures, in the order they appear in the article |
-| `figure_style.R` | Plot colours, themes and export helper |
-
-The model-comparison script includes any listed model whose saved fit exists,
-including separately fitted M2-II, M2-IV or exploratory M5. Its LS retains native
-CPO values, including flagged cells; it does not perform the subsequent per-cell
-numerical review used for the manuscript's descriptive LS comparison. The
-shared-field hyperparameter-integration sensitivity supplement also requires
-postprocessing beyond this driver. These outputs therefore need those additional
-checks before being substituted for the reviewed manuscript results.
-
-The period-loading CSV summarises individual loadings from draws, whereas the
-parameter table and loading figure use INLA's integrated marginals. Keep that
-distinction when preparing manuscript tables. The 5,000 hyperparameter draws used
-for loading contrasts and the 2,000 joint draws of predictors and temporal effects
-are separate calculations. The hotspot rule selects areas with joint exceedance
-in every selected draw in every year; it does not establish a posterior probability
-exactly equal to one.
+See the [project model reference](../README.md#model-reference).
