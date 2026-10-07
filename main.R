@@ -1,7 +1,8 @@
 ################################################################################
 # Reproduces the analysis of the article, from the input data to the tables
 # and figures. Run from the repository root:  source("main.R")
-# About 30 minutes with R 4.4.2 and INLA 24.12.11.
+# Includes the results and appendices of article_public_health.tex.
+# Continuous integration and appendix refits can take several hours.
 ################################################################################
 
 source("R/Data_preparation/Data_preparation.R")   # -> results/data/
